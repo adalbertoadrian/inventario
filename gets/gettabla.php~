@@ -1,0 +1,93 @@
+<?php
+include("../includes/autentificado.php"); 
+
+			$fei=$_GET["i"];
+			$fef=$_GET["f"];
+			$ub=$_GET["u"];	
+			
+			$anoi=substr($fei,0,4);
+			$mesi=substr($fei,4,2);
+			$diai=substr($fei,6,2);
+			
+			$anof=substr($fef,0,4);
+			$mesf=substr($fef,4,2);
+			$diaf=substr($fef,6,2);
+			
+			include("../includes/conecta.php");
+
+			if($ub=='')
+			
+			{			
+			
+			$result = mysql_query("SELECT d.numero, d.tipo_disp, d.operador, d.tecnologia, d.marca, d.modelo, d.plan, d.clave, d.inv, d.entregado, e.serial, e.condicion, e.desc_entrega, e.fecha, u.cedula, u.nombre, u.apellido, u.uo FROM dispositivos AS d INNER JOIN (entregados AS e INNER JOIN usuarios AS u ON e.cedula=u.cedula) ON d.serial=e.serial WHERE e.fecha BETWEEN '".$anoi."-".$mesi."-".$diai."' AND '".$anof."-".$mesf."-".$diaf."' ORDER BY e.fecha");
+			
+			}
+			
+			else
+			
+			{
+			
+			$result = mysql_query("SELECT d.numero, d.tipo_disp, d.operador, d.tecnologia, d.marca, d.modelo, d.plan, d.clave, d.inv, d.entregado, e.serial, e.condicion, e.desc_entrega, e.fecha, u.cedula, u.nombre, u.apellido, u.uo FROM dispositivos AS d INNER JOIN (entregados AS e INNER JOIN usuarios AS u ON e.cedula=u.cedula) ON d.serial=e.serial WHERE e.fecha BETWEEN '".$anoi."-".$mesi."-".$diai."' AND '".$anof."-".$mesf."-".$diaf."' AND ubicacion = '".$ub."' ORDER BY e.fecha");			
+			
+			}
+
+			echo "<table border='2' rules='none' cellspacing='2' align=center>
+			<tr bgcolor='#8181F7' align=center>
+			<th><div style='font-size:12px; color:#FFFFFF';>Fecha Entrega</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Numero</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Tipo de Dispositivo</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Operador</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Marca</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Modelo</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Plan</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Serial</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Inventario</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Cedula</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Nombre</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Apellido</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>UO</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Condici&oacute;n</div></th>
+			<th><div style='font-size:12px; color:#FFFFFF';>Descripci&oacute;n</div></th>
+			</tr>";
+			
+			$color=1;
+			
+			while($row = mysql_fetch_array($result))
+  			{
+  			if ($color==1) {
+			$colorfondo="#FFFFFF";
+			$color = 2;
+			}
+			else
+			{
+			$colorfondo="#D8D8D8";
+			$color = 1;
+			}
+
+  			echo "<tr bgcolor=".$colorfondo." align=center>";
+  			echo "<td><div style='font-size:12px';>" . $row['fecha'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['numero'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['tipo_disp'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['operador'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['marca'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['modelo'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['plan'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['serial'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['inv'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['cedula'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['nombre'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['apellido'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['uo'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['condicion'] . "</div></td>";
+  			echo "<td><div style='font-size:12px';>" . $row['desc_entrega'] . "</div></td>";
+  			echo "</tr>";
+  			}
+			echo "</table>";
+			
+			echo "<br /><br />";
+			
+			$r=2;
+			echo "<div style='text-align:center';><a href='exportar.php?i=".$fei."&f=".$fef."&r=".$r."'><img src='imagenes/export.png' border = 0><br />Exportar</a></div>";
+
+			mysql_close($con);		
+?>
